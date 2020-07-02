@@ -36,7 +36,7 @@ final class PhotoGridViewController: UICollectionViewController {
         
         resetCachedAssets()
         
-        collectionView.register(PhotoGridCell.self, forCellWithReuseIdentifier: PhotoGridCell.reuseIdentifier)
+        setup()
     }
     
     override func viewWillLayoutSubviews() {
@@ -66,6 +66,11 @@ final class PhotoGridViewController: UICollectionViewController {
         super.viewDidAppear(animated)
         updateCachedAssets()
     }
+    
+    private func setup() {
+        collectionView.allowsMultipleSelection = true
+        collectionView.register(PhotoGridCell.self, forCellWithReuseIdentifier: PhotoGridCell.reuseIdentifier)
+    }
 }
 
 // MARK: - UICollectionViewDataSource
@@ -91,6 +96,25 @@ extension PhotoGridViewController {
             }
         })
         return cell
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+extension PhotoGridViewController {
+    override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        guard let selectedIndices = collectionView.indexPathsForSelectedItems else {
+            return true
+        }
+        // TODO: 셀렉트 제한 처리
+        return selectedIndices.count < 5
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        delegate?.didSelectAsset(fetchResult.object(at: indexPath.item))
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        delegate?.didDeselectAsset(fetchResult.object(at: indexPath.item))
     }
 }
 

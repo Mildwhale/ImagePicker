@@ -16,6 +16,8 @@ final class ImagePickerViewController: UINavigationController {
     private var selectedAssets: [PHAsset] = [] {
         didSet {
             doneButtonItem.isEnabled = selectedAssets.isEmpty == false
+            
+            print(#function, selectedAssets)
         }
     }
 
@@ -65,10 +67,12 @@ extension ImagePickerViewController {
 // MARK: - PhotoGridViewControllerDelegate
 extension ImagePickerViewController: PhotoGridViewControllerDelegate {
     func didSelectAsset(_ asset: PHAsset) {
+        print(#function, asset)
         selectedAssets.append(asset)
     }
     
     func didDeselectAsset(_ asset: PHAsset) {
+        print(#function, asset)
         selectedAssets.removeAll(where: { $0 == asset })
     }
 }

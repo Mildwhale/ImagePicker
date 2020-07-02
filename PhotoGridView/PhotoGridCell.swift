@@ -6,6 +6,12 @@ final class PhotoGridCell: UICollectionViewCell {
     let imageView: UIImageView = UIImageView()
     var representedAssetIdentifier: String = ""
     
+    override var isSelected: Bool {
+        didSet {
+            alpha = isSelected ? 0.7 : 1.0
+        }
+    }
+    
     var thumbnailImage: UIImage? {
         didSet {
             imageView.image = thumbnailImage
