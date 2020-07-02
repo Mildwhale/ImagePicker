@@ -3,27 +3,32 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		89D8FF4524ADBE8F00138B99 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF4424ADBE8F00138B99 /* AppDelegate.swift */; };
-		89D8FF4724ADBE8F00138B99 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF4624ADBE8F00138B99 /* SceneDelegate.swift */; };
 		89D8FF4924ADBE8F00138B99 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF4824ADBE8F00138B99 /* ViewController.swift */; };
 		89D8FF4C24ADBE8F00138B99 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 89D8FF4A24ADBE8F00138B99 /* Main.storyboard */; };
 		89D8FF4E24ADBE9200138B99 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89D8FF4D24ADBE9200138B99 /* Assets.xcassets */; };
 		89D8FF5124ADBE9200138B99 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 89D8FF4F24ADBE9200138B99 /* LaunchScreen.storyboard */; };
+		89D8FF5A24ADC08100138B99 /* PhotoGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF5924ADC08100138B99 /* PhotoGridViewController.swift */; };
+		89D8FF5D24ADC39100138B99 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 89D8FF5C24ADC39100138B99 /* SnapKit */; };
+		89D8FF5F24ADC9E700138B99 /* PhotoGridCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF5E24ADC9E700138B99 /* PhotoGridCell.swift */; };
+		89D8FF6224ADCDA700138B99 /* ImagePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF6124ADCDA700138B99 /* ImagePickerViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		89D8FF4124ADBE8F00138B99 /* PhotoAlbumSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoAlbumSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89D8FF4424ADBE8F00138B99 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		89D8FF4624ADBE8F00138B99 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		89D8FF4824ADBE8F00138B99 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		89D8FF4B24ADBE8F00138B99 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		89D8FF4D24ADBE9200138B99 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		89D8FF5024ADBE9200138B99 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89D8FF5224ADBE9200138B99 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		89D8FF5924ADC08100138B99 /* PhotoGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGridViewController.swift; sourceTree = "<group>"; };
+		89D8FF5E24ADC9E700138B99 /* PhotoGridCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGridCell.swift; sourceTree = "<group>"; };
+		89D8FF6124ADCDA700138B99 /* ImagePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +36,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89D8FF5D24ADC39100138B99 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,7 +46,9 @@
 		89D8FF3824ADBE8F00138B99 = {
 			isa = PBXGroup;
 			children = (
-				89D8FF4324ADBE8F00138B99 /* PhotoAlbumSample */,
+				89D8FF6024ADCD7F00138B99 /* ImagePickerView */,
+				89D8FF5824ADBF0200138B99 /* PhotoGridView */,
+				89D8FF4324ADBE8F00138B99 /* Example */,
 				89D8FF4224ADBE8F00138B99 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -53,18 +61,34 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		89D8FF4324ADBE8F00138B99 /* PhotoAlbumSample */ = {
+		89D8FF4324ADBE8F00138B99 /* Example */ = {
 			isa = PBXGroup;
 			children = (
 				89D8FF4424ADBE8F00138B99 /* AppDelegate.swift */,
-				89D8FF4624ADBE8F00138B99 /* SceneDelegate.swift */,
 				89D8FF4824ADBE8F00138B99 /* ViewController.swift */,
 				89D8FF4A24ADBE8F00138B99 /* Main.storyboard */,
 				89D8FF4D24ADBE9200138B99 /* Assets.xcassets */,
 				89D8FF4F24ADBE9200138B99 /* LaunchScreen.storyboard */,
 				89D8FF5224ADBE9200138B99 /* Info.plist */,
 			);
-			path = PhotoAlbumSample;
+			path = Example;
+			sourceTree = "<group>";
+		};
+		89D8FF5824ADBF0200138B99 /* PhotoGridView */ = {
+			isa = PBXGroup;
+			children = (
+				89D8FF5924ADC08100138B99 /* PhotoGridViewController.swift */,
+				89D8FF5E24ADC9E700138B99 /* PhotoGridCell.swift */,
+			);
+			path = PhotoGridView;
+			sourceTree = "<group>";
+		};
+		89D8FF6024ADCD7F00138B99 /* ImagePickerView */ = {
+			isa = PBXGroup;
+			children = (
+				89D8FF6124ADCDA700138B99 /* ImagePickerViewController.swift */,
+			);
+			path = ImagePickerView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -83,6 +107,9 @@
 			dependencies = (
 			);
 			name = PhotoAlbumSample;
+			packageProductDependencies = (
+				89D8FF5C24ADC39100138B99 /* SnapKit */,
+			);
 			productName = PhotoAlbumSample;
 			productReference = 89D8FF4124ADBE8F00138B99 /* PhotoAlbumSample.app */;
 			productType = "com.apple.product-type.application";
@@ -111,6 +138,9 @@
 				Base,
 			);
 			mainGroup = 89D8FF3824ADBE8F00138B99;
+			packageReferences = (
+				89D8FF5B24ADC39100138B99 /* XCRemoteSwiftPackageReference "SnapKit" */,
+			);
 			productRefGroup = 89D8FF4224ADBE8F00138B99 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -139,8 +169,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				89D8FF4924ADBE8F00138B99 /* ViewController.swift in Sources */,
+				89D8FF6224ADCDA700138B99 /* ImagePickerViewController.swift in Sources */,
 				89D8FF4524ADBE8F00138B99 /* AppDelegate.swift in Sources */,
-				89D8FF4724ADBE8F00138B99 /* SceneDelegate.swift in Sources */,
+				89D8FF5F24ADC9E700138B99 /* PhotoGridCell.swift in Sources */,
+				89D8FF5A24ADC08100138B99 /* PhotoGridViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,7 +248,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -270,7 +302,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -285,7 +317,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = PhotoAlbumSample/Info.plist;
+				INFOPLIST_FILE = Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -293,7 +325,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.qroquis.PhotoAlbumSample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -302,7 +334,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = PhotoAlbumSample/Info.plist;
+				INFOPLIST_FILE = Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -310,7 +342,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.qroquis.PhotoAlbumSample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -336,6 +368,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		89D8FF5B24ADC39100138B99 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:SnapKit/SnapKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		89D8FF5C24ADC39100138B99 /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 89D8FF5B24ADC39100138B99 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 89D8FF3924ADBE8F00138B99 /* Project object */;
 }
