@@ -30,34 +30,24 @@ struct ImagePickerConfiguration {
             }
         }
         
-        struct Grid {
-            let backgroundColor: UIColor
-            
-            init(backgroundColor: UIColor = .white) {
-                self.backgroundColor = backgroundColor
-            }
-        }
-        
         let navigationBar: NavigationBar
-        let grid: Grid
         
-        init(navigationBar: NavigationBar = NavigationBar(), grid: Grid = Grid()) {
+        init(navigationBar: NavigationBar = NavigationBar()) {
             self.navigationBar = navigationBar
-            self.grid = grid
         }
     }
     
     struct Grid {
         let numberOfItemsPerLine: Int
-        let minimumItemSpacing: CGFloat
-        let minimumLineSpacing: CGFloat
+        let estimateItemSpacing: CGFloat
+        let estimateLineSpacing: CGFloat
         
         init(numberOfItemsPerLine: Int = 3,
-             minimumItemSpacing: CGFloat = 2,
-             minimumLineSpacing: CGFloat = 2) {
+             estimateItemSpacing: CGFloat = 2,
+             estimateLineSpacing: CGFloat = 2) {
             self.numberOfItemsPerLine = numberOfItemsPerLine
-            self.minimumItemSpacing = minimumItemSpacing
-            self.minimumLineSpacing = minimumLineSpacing
+            self.estimateItemSpacing = estimateItemSpacing
+            self.estimateLineSpacing = estimateLineSpacing
         }
     }
     

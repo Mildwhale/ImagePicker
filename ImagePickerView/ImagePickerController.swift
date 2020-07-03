@@ -6,9 +6,11 @@ protocol ImagePickerControllerDelegate: class {
 }
 
 final class ImagePickerController: UINavigationController {
+    // Delegate
     public weak var imagePickerDelegate: ImagePickerControllerDelegate?
     
-    private var gridViewController: PhotoGridViewController!
+    // UI Components
+    private var collectionViewController: GridCollectionViewController?
     private let albumButton = UIButton(type: .system)
     private let cancelButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
                                                    target: self,
@@ -17,21 +19,19 @@ final class ImagePickerController: UINavigationController {
                                                  target: self,
                                                  action: #selector(doneButtonTouchUpInside(_:)))
     
+    // Datas
     private var pickedAssets: [PHAsset] = [] {
-        didSet {
-            updateUI()
-        }
+        didSet { updateUI() }
+    }
+    
+    private var selectedAlbumIndex: Int = 0 {
+        didSet { updateUI() }
     }
     
     private var albums: [PHAssetCollection] = []
-    private var selectedAlbumIndex: Int = 0 {
-        didSet {
-            updateUI()
-        }
-    }
-    
     private let configuration: ImagePickerConfiguration
     
+    // Init
     init(configuration: ImagePickerConfiguration = .default) {
         self.configuration = configuration
         super.init(nibName: nil, bundle: nil)
@@ -56,52 +56,27 @@ final class ImagePickerController: UINavigationController {
         doneButtonItem.tintColor = configuration.theme.navigationBar.itemsTintColor
         
         // Album Button
-        albumButton.addTarget(self, action: #selector(presentAlbumChoiceSheet(_:)), for: .touchUpInside)
+        albumButton.addTarget(self, action: #selector(presentAlbumSelectionSheet(_:)), for: .touchUpInside)
         
         // Filter Albums
         filterEmptyAlbum()
         
-        // Setup GridViewController.
-        let fetchResult: PHFetchResult<PHAsset> = fetchAssets(from: albums.first)
-        let gridViewController = PhotoGridViewController(fetchResult: fetchResult, configuration: configuration)
-        gridViewController.delegate = self
-        gridViewController.navigationItem.titleView = albumButton
-        gridViewController.navigationItem.leftBarButtonItem = cancelButtonItem
-        gridViewController.navigationItem.rightBarButtonItem = doneButtonItem
+        // Setup CollectionViewController
+        let fetchResult = fetchAssets(from: albums.first)
+        let collectionViewController = GridCollectionViewController(fetchResult: fetchResult, configuration: configuration)
+        collectionViewController.delegate = self
+        collectionViewController.navigationItem.leftBarButtonItem = cancelButtonItem
+        collectionViewController.navigationItem.rightBarButtonItem = doneButtonItem
 
-        viewControllers = [gridViewController]
+        viewControllers = [collectionViewController]
         
-        self.gridViewController = gridViewController
-    }
-    
-    private func fetchAssets(from collection: PHAssetCollection? = nil) -> PHFetchResult<PHAsset> {
-        let fetchOptions = PHFetchOptions()
-        fetchOptions.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.image.rawValue)
-        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: configuration.sort == .ascending)]
-        
-        if let collection = collection {
-            return PHAsset.fetchAssets(in: collection, options: fetchOptions)
-        } else {
-            return PHAsset.fetchAssets(with: fetchOptions)
-        }
-    }
-    
-    private func filterEmptyAlbum() {
-        configuration.albums.forEach {
-            $0.collections.enumerateObjects(options: .concurrent) { [weak self] (collection, _, _) in
-                guard let self = self else { return }
-                let fetchOptions = PHFetchOptions()
-                fetchOptions.fetchLimit = 1
-                
-                if PHAsset.fetchAssets(in: collection, options: fetchOptions).count > 0 {
-                    self.albums.append(collection)
-                }
-            }
-        }
+        self.collectionViewController = collectionViewController
     }
     
     private func updateUI() {
         doneButtonItem.isEnabled = pickedAssets.count >= configuration.selection.min
+
+        collectionViewController?.navigationItem.titleView = albums.count > 1 ? albumButton : nil
         
         var albumButtonTitle: String? {
             if albums.isEmpty {
@@ -116,7 +91,7 @@ final class ImagePickerController: UINavigationController {
         albumButton.setTitle(albumButtonTitle, for: .normal)
     }
     
-    @objc func presentAlbumChoiceSheet(_ sender: UIButton) {
+    @objc func presentAlbumSelectionSheet(_ sender: UIButton) {
         guard albums.isEmpty == false else { return }
         
         let sheet = UIAlertController(title: "앨범 선택", message: nil, preferredStyle: .actionSheet)
@@ -124,16 +99,45 @@ final class ImagePickerController: UINavigationController {
             let action = UIAlertAction(title: album.localizedTitle, style: .default) { [weak self] action in
                 guard let self = self else { return }
                 if index < self.albums.count {
-                    self.gridViewController.fetchResult = self.fetchAssets(from: self.albums[index])
+                    self.collectionViewController?.fetchResult = self.fetchAssets(from: self.albums[index])
                     self.selectedAlbumIndex = index
                     self.pickedAssets.removeAll()
                 }
             }
             sheet.addAction(action)
         }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        sheet.addAction(cancelAction)
+        sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
         present(sheet, animated: true, completion: nil)
+    }
+}
+
+// MARK: - Asset & Album Handler
+extension ImagePickerController {
+    private func fetchAssets(from collection: PHAssetCollection? = nil) -> PHFetchResult<PHAsset> {
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.image.rawValue)
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: configuration.sort == .ascending)]
+        
+        if let collection = collection {
+            return PHAsset.fetchAssets(in: collection, options: fetchOptions)
+        } else {
+            return PHAsset.fetchAssets(with: fetchOptions)
+        }
+    }
+    
+    private func filterEmptyAlbum() {
+        configuration.albums.forEach {
+            $0.collections.enumerateObjects { [weak self] (collection, _, _) in
+                guard let self = self else { return }
+                let fetchOptions = PHFetchOptions()
+                fetchOptions.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.image.rawValue)
+                fetchOptions.fetchLimit = 1
+                
+                guard PHAsset.fetchAssets(in: collection, options: fetchOptions).count > 0 else { return }
+                self.albums.append(collection)
+            }
+        }
     }
 }
 
@@ -152,12 +156,12 @@ extension ImagePickerController {
 }
 
 // MARK: - PhotoGridViewControllerDelegate
-extension ImagePickerController: PhotoGridViewControllerDelegate {
-    func didSelectAsset(_ asset: PHAsset) {
+extension ImagePickerController: GridCollectionViewControllerDelegate {
+    func collectionView(_ controller: GridCollectionViewController, didSelect asset: PHAsset) {
         pickedAssets.append(asset)
     }
     
-    func didDeselectAsset(_ asset: PHAsset) {
+    func collectionView(_ controller: GridCollectionViewController, didDeselect asset: PHAsset) {
         pickedAssets.removeAll(where: { $0 == asset })
     }
 }

@@ -12,9 +12,9 @@
 		89D8FF4C24ADBE8F00138B99 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 89D8FF4A24ADBE8F00138B99 /* Main.storyboard */; };
 		89D8FF4E24ADBE9200138B99 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89D8FF4D24ADBE9200138B99 /* Assets.xcassets */; };
 		89D8FF5124ADBE9200138B99 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 89D8FF4F24ADBE9200138B99 /* LaunchScreen.storyboard */; };
-		89D8FF5A24ADC08100138B99 /* PhotoGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF5924ADC08100138B99 /* PhotoGridViewController.swift */; };
+		89D8FF5A24ADC08100138B99 /* GridCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF5924ADC08100138B99 /* GridCollectionViewController.swift */; };
 		89D8FF5D24ADC39100138B99 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 89D8FF5C24ADC39100138B99 /* SnapKit */; };
-		89D8FF5F24ADC9E700138B99 /* PhotoGridCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF5E24ADC9E700138B99 /* PhotoGridCell.swift */; };
+		89D8FF5F24ADC9E700138B99 /* GridCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF5E24ADC9E700138B99 /* GridCollectionViewCell.swift */; };
 		89D8FF6224ADCDA700138B99 /* ImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF6124ADCDA700138B99 /* ImagePickerController.swift */; };
 		89D8FF6424AEC05A00138B99 /* ImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF6324AEC05A00138B99 /* ImageTableViewCell.swift */; };
 		89D8FF6624AECEB800138B99 /* ImagePickerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF6524AECEB800138B99 /* ImagePickerConfiguration.swift */; };
@@ -28,8 +28,8 @@
 		89D8FF4D24ADBE9200138B99 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		89D8FF5024ADBE9200138B99 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89D8FF5224ADBE9200138B99 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		89D8FF5924ADC08100138B99 /* PhotoGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGridViewController.swift; sourceTree = "<group>"; };
-		89D8FF5E24ADC9E700138B99 /* PhotoGridCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGridCell.swift; sourceTree = "<group>"; };
+		89D8FF5924ADC08100138B99 /* GridCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridCollectionViewController.swift; sourceTree = "<group>"; };
+		89D8FF5E24ADC9E700138B99 /* GridCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridCollectionViewCell.swift; sourceTree = "<group>"; };
 		89D8FF6124ADCDA700138B99 /* ImagePickerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerController.swift; sourceTree = "<group>"; };
 		89D8FF6324AEC05A00138B99 /* ImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTableViewCell.swift; sourceTree = "<group>"; };
 		89D8FF6524AECEB800138B99 /* ImagePickerConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerConfiguration.swift; sourceTree = "<group>"; };
@@ -51,7 +51,6 @@
 			isa = PBXGroup;
 			children = (
 				89D8FF6024ADCD7F00138B99 /* ImagePickerView */,
-				89D8FF5824ADBF0200138B99 /* PhotoGridView */,
 				89D8FF4324ADBE8F00138B99 /* Example */,
 				89D8FF4224ADBE8F00138B99 /* Products */,
 			);
@@ -79,18 +78,19 @@
 			path = Example;
 			sourceTree = "<group>";
 		};
-		89D8FF5824ADBF0200138B99 /* PhotoGridView */ = {
+		89D8FF5824ADBF0200138B99 /* GridCollectionView */ = {
 			isa = PBXGroup;
 			children = (
-				89D8FF5924ADC08100138B99 /* PhotoGridViewController.swift */,
-				89D8FF5E24ADC9E700138B99 /* PhotoGridCell.swift */,
+				89D8FF5924ADC08100138B99 /* GridCollectionViewController.swift */,
+				89D8FF5E24ADC9E700138B99 /* GridCollectionViewCell.swift */,
 			);
-			path = PhotoGridView;
+			path = GridCollectionView;
 			sourceTree = "<group>";
 		};
 		89D8FF6024ADCD7F00138B99 /* ImagePickerView */ = {
 			isa = PBXGroup;
 			children = (
+				89D8FF5824ADBF0200138B99 /* GridCollectionView */,
 				89D8FF6124ADCDA700138B99 /* ImagePickerController.swift */,
 				89D8FF6524AECEB800138B99 /* ImagePickerConfiguration.swift */,
 			);
@@ -178,9 +178,9 @@
 				89D8FF6224ADCDA700138B99 /* ImagePickerController.swift in Sources */,
 				89D8FF4524ADBE8F00138B99 /* AppDelegate.swift in Sources */,
 				89D8FF6424AEC05A00138B99 /* ImageTableViewCell.swift in Sources */,
-				89D8FF5F24ADC9E700138B99 /* PhotoGridCell.swift in Sources */,
+				89D8FF5F24ADC9E700138B99 /* GridCollectionViewCell.swift in Sources */,
 				89D8FF6624AECEB800138B99 /* ImagePickerConfiguration.swift in Sources */,
-				89D8FF5A24ADC08100138B99 /* PhotoGridViewController.swift in Sources */,
+				89D8FF5A24ADC08100138B99 /* GridCollectionViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -325,6 +325,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = J32343K4UR;
 				INFOPLIST_FILE = Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -342,6 +343,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = J32343K4UR;
 				INFOPLIST_FILE = Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
