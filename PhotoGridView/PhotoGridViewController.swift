@@ -18,8 +18,16 @@ final class PhotoGridViewController: UICollectionViewController {
     private var thumbnailSize = CGSize.zero
     private var previousPreheatRect = CGRect.zero
     
-    private let fetchResult: PHFetchResult<PHAsset>
+    public var fetchResult: PHFetchResult<PHAsset> = PHFetchResult() {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
     private let configuration: ImagePickerConfiguration
+    
+    deinit {
+        PHPhotoLibrary.shared().unregisterChangeObserver(self)
+    }
     
     init(fetchResult: PHFetchResult<PHAsset>, configuration: ImagePickerConfiguration) {
         self.fetchResult = fetchResult
@@ -66,6 +74,9 @@ final class PhotoGridViewController: UICollectionViewController {
         // Grid
         collectionViewFlowLayout.minimumInteritemSpacing = configuration.grid.minimumItemSpacing
         collectionViewFlowLayout.minimumLineSpacing = configuration.grid.minimumLineSpacing
+        
+        // Register
+        PHPhotoLibrary.shared().register(self)
     }
     
     private func updateFlowLayoutIfNeeded() {
@@ -197,6 +208,17 @@ extension PhotoGridViewController {
             return (added, removed)
         } else {
             return ([new], [old])
+        }
+    }
+}
+
+// MARK: - PHPhotoLibraryChangeObserver
+extension PhotoGridViewController: PHPhotoLibraryChangeObserver {
+    func photoLibraryDidChange(_ changeInstance: PHChange) {
+        DispatchQueue.main.sync {
+            if let changeDetails = changeInstance.changeDetails(for: fetchResult) {
+                fetchResult = changeDetails.fetchResultAfterChanges
+            }
         }
     }
 }
