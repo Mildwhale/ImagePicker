@@ -17,20 +17,59 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YZG-Jn-bRC">
-                                <rect key="frame" x="172.5" y="433" width="69" height="30"/>
+                                <rect key="frame" x="172.5" y="792" width="69" height="30"/>
                                 <state key="normal" title="사진첩 열기"/>
                                 <connections>
                                     <action selector="presentImagePicker:" destination="BYZ-38-t0r" eventType="touchUpInside" id="lCn-aq-HiV"/>
                                 </connections>
                             </button>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="nYD-1j-0su">
+                                <rect key="frame" x="0.0" y="44" width="414" height="728"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ImageTableViewCell" rowHeight="80" id="GVm-XW-xiQ" customClass="ImageTableViewCell" customModule="PhotoAlbumSample" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="414" height="80"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="GVm-XW-xiQ" id="9Tn-I0-i6X">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="80"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="eXf-4I-SRE">
+                                                    <rect key="frame" x="8" y="8" width="398" height="64"/>
+                                                </imageView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="eXf-4I-SRE" firstAttribute="top" secondItem="9Tn-I0-i6X" secondAttribute="top" constant="8" id="XNL-9D-yY2"/>
+                                                <constraint firstAttribute="trailing" secondItem="eXf-4I-SRE" secondAttribute="trailing" constant="8" id="aEQ-fJ-ppz"/>
+                                                <constraint firstItem="eXf-4I-SRE" firstAttribute="leading" secondItem="9Tn-I0-i6X" secondAttribute="leading" constant="8" id="hbB-sZ-Mo3"/>
+                                                <constraint firstAttribute="bottom" secondItem="eXf-4I-SRE" secondAttribute="bottom" constant="8" id="tq5-Z8-KR2"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="centerdImageView" destination="eXf-4I-SRE" id="Ffb-oa-nyi"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="c3f-4T-UBl"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="kPJ-B7-FoC"/>
+                                </connections>
+                            </tableView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="YZG-Jn-bRC" secondAttribute="bottom" constant="40" id="9Vf-HL-sDG"/>
                             <constraint firstItem="YZG-Jn-bRC" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="aEN-jH-CZ4"/>
-                            <constraint firstItem="YZG-Jn-bRC" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="j11-2Q-Eo3"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="nYD-1j-0su" secondAttribute="trailing" id="gyR-sd-rLE"/>
+                            <constraint firstItem="YZG-Jn-bRC" firstAttribute="top" secondItem="nYD-1j-0su" secondAttribute="bottom" constant="20" id="jv6-Wa-Ify"/>
+                            <constraint firstItem="nYD-1j-0su" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="kHL-K6-ldu"/>
+                            <constraint firstItem="nYD-1j-0su" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="uei-dk-RRx"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
+                    <connections>
+                        <outlet property="tableView" destination="nYD-1j-0su" id="FnI-I6-vV3"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

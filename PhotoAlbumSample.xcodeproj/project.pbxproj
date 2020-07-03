@@ -15,7 +15,8 @@
 		89D8FF5A24ADC08100138B99 /* PhotoGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF5924ADC08100138B99 /* PhotoGridViewController.swift */; };
 		89D8FF5D24ADC39100138B99 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 89D8FF5C24ADC39100138B99 /* SnapKit */; };
 		89D8FF5F24ADC9E700138B99 /* PhotoGridCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF5E24ADC9E700138B99 /* PhotoGridCell.swift */; };
-		89D8FF6224ADCDA700138B99 /* ImagePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF6124ADCDA700138B99 /* ImagePickerViewController.swift */; };
+		89D8FF6224ADCDA700138B99 /* ImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF6124ADCDA700138B99 /* ImagePickerController.swift */; };
+		89D8FF6424AEC05A00138B99 /* ImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF6324AEC05A00138B99 /* ImageTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,7 +29,8 @@
 		89D8FF5224ADBE9200138B99 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89D8FF5924ADC08100138B99 /* PhotoGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGridViewController.swift; sourceTree = "<group>"; };
 		89D8FF5E24ADC9E700138B99 /* PhotoGridCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGridCell.swift; sourceTree = "<group>"; };
-		89D8FF6124ADCDA700138B99 /* ImagePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerViewController.swift; sourceTree = "<group>"; };
+		89D8FF6124ADCDA700138B99 /* ImagePickerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerController.swift; sourceTree = "<group>"; };
+		89D8FF6324AEC05A00138B99 /* ImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +68,7 @@
 			children = (
 				89D8FF4424ADBE8F00138B99 /* AppDelegate.swift */,
 				89D8FF4824ADBE8F00138B99 /* ViewController.swift */,
+				89D8FF6324AEC05A00138B99 /* ImageTableViewCell.swift */,
 				89D8FF4A24ADBE8F00138B99 /* Main.storyboard */,
 				89D8FF4D24ADBE9200138B99 /* Assets.xcassets */,
 				89D8FF4F24ADBE9200138B99 /* LaunchScreen.storyboard */,
@@ -86,7 +89,7 @@
 		89D8FF6024ADCD7F00138B99 /* ImagePickerView */ = {
 			isa = PBXGroup;
 			children = (
-				89D8FF6124ADCDA700138B99 /* ImagePickerViewController.swift */,
+				89D8FF6124ADCDA700138B99 /* ImagePickerController.swift */,
 			);
 			path = ImagePickerView;
 			sourceTree = "<group>";
@@ -169,8 +172,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				89D8FF4924ADBE8F00138B99 /* ViewController.swift in Sources */,
-				89D8FF6224ADCDA700138B99 /* ImagePickerViewController.swift in Sources */,
+				89D8FF6224ADCDA700138B99 /* ImagePickerController.swift in Sources */,
 				89D8FF4524ADBE8F00138B99 /* AppDelegate.swift in Sources */,
+				89D8FF6424AEC05A00138B99 /* ImageTableViewCell.swift in Sources */,
 				89D8FF5F24ADC9E700138B99 /* PhotoGridCell.swift in Sources */,
 				89D8FF5A24ADC08100138B99 /* PhotoGridViewController.swift in Sources */,
 			);
