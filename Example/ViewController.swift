@@ -18,6 +18,21 @@ class ViewController: UIViewController {
     }
     
     @IBAction func presentImagePicker(_ sender: UIButton) {
+        guard PHPhotoLibrary.authorizationStatus() == .authorized else {
+            if PHPhotoLibrary.authorizationStatus() == .notDetermined {
+                PHPhotoLibrary.requestAuthorization({ status in
+                    if status == .authorized {
+                        DispatchQueue.main.async { [weak self] in
+                            guard let self = self else { return }
+                            self.presentImagePickerController(delegate: self)
+                        }
+                    }
+                })
+            } else {
+                // nothing
+            }
+            return
+        }
         presentImagePickerController(delegate: self)
     }
 }
