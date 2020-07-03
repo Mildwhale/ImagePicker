@@ -18,12 +18,13 @@ class ViewController: UIViewController {
     }
     
     @IBAction func presentImagePicker(_ sender: UIButton) {
-        let navigationBarTheme = ImagePickerConfiguration.Theme.NavigationBar(translucent: false,
-                                                                                         backgroundColor: .systemPink,
-                                                                                         itemsTintColor: .white)
+        let navigationBarTheme = ImagePickerConfiguration.Theme.NavigationBar(translucent: true,
+                                                                              backgroundColor: .white,
+                                                                              itemsTintColor: .systemPink)
         let theme = ImagePickerConfiguration.Theme(navigationBar: navigationBarTheme)
         let selection = ImagePickerConfiguration.Selection(min: 1, max: 5)
-        let configuraion = ImagePickerConfiguration(theme: theme, selection: selection)
+        let albums: [ImagePickerConfiguration.Album] = [.smart, .userCreated, .favorite]
+        let configuraion = ImagePickerConfiguration(albums: albums, theme: theme, selection: selection)
         
         guard PHPhotoLibrary.authorizationStatus() == .authorized else {
             if PHPhotoLibrary.authorizationStatus() == .notDetermined {
@@ -36,7 +37,7 @@ class ViewController: UIViewController {
                     }
                 })
             } else {
-                // nothing
+                // notify to user (e.g Alert or Toast)
             }
             return
         }

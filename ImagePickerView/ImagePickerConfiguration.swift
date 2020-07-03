@@ -1,7 +1,20 @@
 import UIKit
 
+import Photos
+
 // MARK: - ImagePickerConfiguration
 struct ImagePickerConfiguration {
+    enum Album: CaseIterable {
+        case smart
+        case userCreated
+        case favorite
+    }
+    
+    enum Sort {
+        case ascending
+        case descending
+    }
+    
     struct Theme {
         struct NavigationBar {
             let translucent: Bool
@@ -58,13 +71,19 @@ struct ImagePickerConfiguration {
         }
     }
     
+    let albums: [Album]
+    let sort: Sort
     let theme: Theme
     let grid: Grid
     let selection: Selection
     
-    init(theme: Theme = Theme(),
+    init(albums: [Album] = [],
+         sort: Sort = .ascending,
+         theme: Theme = Theme(),
          grid: Grid = Grid(),
          selection: Selection = Selection()) {
+        self.albums = albums
+        self.sort = sort
         self.theme = theme
         self.grid = grid
         self.selection = selection
@@ -75,5 +94,25 @@ struct ImagePickerConfiguration {
 extension ImagePickerConfiguration {
     static var `default`: ImagePickerConfiguration {
         return ImagePickerConfiguration()
+    }
+}
+
+extension ImagePickerConfiguration.Album {
+    var collections: PHFetchResult<PHAssetCollection> {
+        switch self {
+        case .smart:
+            return PHAssetCollection.fetchAssetCollections(with: .smartAlbum,
+                                                           subtype: .smartAlbumUserLibrary,
+                                                           options:  nil)
+        case .userCreated:
+            return PHAssetCollection.fetchAssetCollections(with: .album,
+                                                           subtype: .albumRegular,
+                                                           options: nil)
+            
+        case .favorite:
+            return PHAssetCollection.fetchAssetCollections(with: .smartAlbum,
+                                                           subtype: .smartAlbumFavorites,
+                                                           options: nil)
+        }
     }
 }

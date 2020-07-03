@@ -18,11 +18,16 @@ final class PhotoGridViewController: UICollectionViewController {
     private var thumbnailSize = CGSize.zero
     private var previousPreheatRect = CGRect.zero
     
-    public var fetchResult: PHFetchResult<PHAsset> = PHFetchResult() {
-        didSet {
+    public var fetchResult: PHFetchResult<PHAsset> {
+        get {
+            return _fetchResult
+        }
+        set {
+            _fetchResult = newValue
             collectionView.reloadData()
         }
     }
+    private var _fetchResult: PHFetchResult<PHAsset>
     private let configuration: ImagePickerConfiguration
     
     deinit {
@@ -30,7 +35,7 @@ final class PhotoGridViewController: UICollectionViewController {
     }
     
     init(fetchResult: PHFetchResult<PHAsset>, configuration: ImagePickerConfiguration) {
-        self.fetchResult = fetchResult
+        self._fetchResult = fetchResult
         self.configuration = configuration
         super.init(collectionViewLayout: self.collectionViewFlowLayout)
     }
@@ -75,7 +80,7 @@ final class PhotoGridViewController: UICollectionViewController {
         collectionViewFlowLayout.minimumInteritemSpacing = configuration.grid.minimumItemSpacing
         collectionViewFlowLayout.minimumLineSpacing = configuration.grid.minimumLineSpacing
         
-        // Register
+        // Register change observer
         PHPhotoLibrary.shared().register(self)
     }
     
@@ -215,14 +220,39 @@ extension PhotoGridViewController {
 // MARK: - PHPhotoLibraryChangeObserver
 extension PhotoGridViewController: PHPhotoLibraryChangeObserver {
     func photoLibraryDidChange(_ changeInstance: PHChange) {
+        guard let changes = changeInstance.changeDetails(for: fetchResult) else { return }
+        
         DispatchQueue.main.sync {
-            if let changeDetails = changeInstance.changeDetails(for: fetchResult) {
-                fetchResult = changeDetails.fetchResultAfterChanges
+            _fetchResult = changes.fetchResultAfterChanges
+            
+            if changes.hasIncrementalChanges {
+                guard let collectionView = self.collectionView else { fatalError() }
+                
+                collectionView.performBatchUpdates({
+                    if let removed = changes.removedIndexes, !removed.isEmpty {
+                        collectionView.deleteItems(at: removed.map({ IndexPath(item: $0, section: 0) }))
+                    }
+                    if let inserted = changes.insertedIndexes, !inserted.isEmpty {
+                        collectionView.insertItems(at: inserted.map({ IndexPath(item: $0, section: 0) }))
+                    }
+                    changes.enumerateMoves { fromIndex, toIndex in
+                        collectionView.moveItem(at: IndexPath(item: fromIndex, section: 0),
+                                                to: IndexPath(item: toIndex, section: 0))
+                    }
+                })
+                
+                if let changed = changes.changedIndexes, !changed.isEmpty {
+                    collectionView.reloadItems(at: changed.map({ IndexPath(item: $0, section: 0) }))
+                }
+            } else {
+                collectionView.reloadData()
             }
+            resetCachedAssets()
         }
     }
 }
 
+// MARK: - Convenience Extensions
 private extension UICollectionView {
     func indexPathsForElements(in rect: CGRect) -> [IndexPath] {
         let allLayoutAttributes = collectionViewLayout.layoutAttributesForElements(in: rect)!
