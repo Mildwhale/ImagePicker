@@ -8,7 +8,7 @@ final class PhotoGridCell: UICollectionViewCell {
     
     override var isSelected: Bool {
         didSet {
-            alpha = isSelected ? 0.7 : 1.0
+            alpha = isSelected ? 0.5 : 1.0
         }
     }
     

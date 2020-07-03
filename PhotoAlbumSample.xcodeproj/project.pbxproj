@@ -17,6 +17,7 @@
 		89D8FF5F24ADC9E700138B99 /* PhotoGridCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF5E24ADC9E700138B99 /* PhotoGridCell.swift */; };
 		89D8FF6224ADCDA700138B99 /* ImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF6124ADCDA700138B99 /* ImagePickerController.swift */; };
 		89D8FF6424AEC05A00138B99 /* ImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF6324AEC05A00138B99 /* ImageTableViewCell.swift */; };
+		89D8FF6624AECEB800138B99 /* ImagePickerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8FF6524AECEB800138B99 /* ImagePickerConfiguration.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		89D8FF5E24ADC9E700138B99 /* PhotoGridCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGridCell.swift; sourceTree = "<group>"; };
 		89D8FF6124ADCDA700138B99 /* ImagePickerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerController.swift; sourceTree = "<group>"; };
 		89D8FF6324AEC05A00138B99 /* ImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTableViewCell.swift; sourceTree = "<group>"; };
+		89D8FF6524AECEB800138B99 /* ImagePickerConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerConfiguration.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				89D8FF6124ADCDA700138B99 /* ImagePickerController.swift */,
+				89D8FF6524AECEB800138B99 /* ImagePickerConfiguration.swift */,
 			);
 			path = ImagePickerView;
 			sourceTree = "<group>";
@@ -176,6 +179,7 @@
 				89D8FF4524ADBE8F00138B99 /* AppDelegate.swift in Sources */,
 				89D8FF6424AEC05A00138B99 /* ImageTableViewCell.swift in Sources */,
 				89D8FF5F24ADC9E700138B99 /* PhotoGridCell.swift in Sources */,
+				89D8FF6624AECEB800138B99 /* ImagePickerConfiguration.swift in Sources */,
 				89D8FF5A24ADC08100138B99 /* PhotoGridViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

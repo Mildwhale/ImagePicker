@@ -6,33 +6,47 @@ protocol ImagePickerControllerDelegate: class {
 }
 
 final class ImagePickerController: UINavigationController {
-    private let cancelButtonItem: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
-                                                                    target: self,
-                                                                    action: #selector(cancelButtonTouchUpInside(_:)))
-    private let doneButtonItem: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
-                                                                  target: self,
-                                                                  action: #selector(doneButtonTouchUpInside(_:)))
+    public weak var imagePickerDelegate: ImagePickerControllerDelegate?
     
-    private var selectedAssets: [PHAsset] = [] {
+    private let cancelButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
+                                                   target: self,
+                                                   action: #selector(cancelButtonTouchUpInside(_:)))
+    private let doneButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
+                                                 target: self,
+                                                 action: #selector(doneButtonTouchUpInside(_:)))
+    
+    private var pickedAssets: [PHAsset] = [] {
         didSet {
-            doneButtonItem.isEnabled = selectedAssets.isEmpty == false
+            updateUI()
         }
     }
-
-    weak var imagePickerDelegate: ImagePickerControllerDelegate?
+    
+    private let configuration: ImagePickerConfiguration
+    
+    init(configuration: ImagePickerConfiguration = .default) {
+        self.configuration = configuration
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
         setup()
+        updateUI()
     }
     
     private func setup() {
-        // Setup navigation items.
-        doneButtonItem.isEnabled = false
+        // Setup NavigationBar
+        navigationBar.isTranslucent = configuration.theme.navigationBar.translucent
+        navigationBar.barTintColor = configuration.theme.navigationBar.barTintColor
+        cancelButtonItem.tintColor = configuration.theme.navigationBar.itemsTintColor
+        doneButtonItem.tintColor = configuration.theme.navigationBar.itemsTintColor
         
-        // Setup grid view controller.
+        // Setup GridViewController.
         var fetchResult: PHFetchResult<PHAsset> {
             let genericCollections = PHAssetCollection.fetchAssetCollections(with: .smartAlbum,
                                                                              subtype: .smartAlbumGeneric,
@@ -41,17 +55,21 @@ final class ImagePickerController: UINavigationController {
                 return PHAsset.fetchAssets(in: allPhotosAlbum, options: nil)
             } else {
                 let allPhotosOptions = PHFetchOptions()
-                allPhotosOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+                allPhotosOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
                 return PHAsset.fetchAssets(with: allPhotosOptions)
             }
         }
         
-        let gridViewController = PhotoGridViewController(fetchResult: fetchResult)
+        let gridViewController = PhotoGridViewController(fetchResult: fetchResult, configuration: configuration)
         gridViewController.delegate = self
         gridViewController.navigationItem.leftBarButtonItem = cancelButtonItem
         gridViewController.navigationItem.rightBarButtonItem = doneButtonItem
         
         viewControllers = [gridViewController]
+    }
+    
+    private func updateUI() {
+        doneButtonItem.isEnabled = pickedAssets.count >= configuration.selection.min
     }
 }
 
@@ -62,13 +80,9 @@ extension ImagePickerController {
     }
     
     @objc func doneButtonTouchUpInside(_ sender: UIBarButtonItem) {
-        let assets = selectedAssets
-        
-        // TODO: Delegate 호출 타이밍 확인
-        
         dismiss(animated: true) { [weak self] in
             guard let self = self else { return }
-            self.imagePickerDelegate?.picker(self, didFinishPicking: assets)
+            self.imagePickerDelegate?.picker(self, didFinishPicking: self.pickedAssets)
         }
     }
 }
@@ -76,24 +90,28 @@ extension ImagePickerController {
 // MARK: - PhotoGridViewControllerDelegate
 extension ImagePickerController: PhotoGridViewControllerDelegate {
     func didSelectAsset(_ asset: PHAsset) {
-        selectedAssets.append(asset)
+        pickedAssets.append(asset)
     }
     
     func didDeselectAsset(_ asset: PHAsset) {
-        selectedAssets.removeAll(where: { $0 == asset })
+        pickedAssets.removeAll(where: { $0 == asset })
     }
 }
 
 // MARK: - ImagePickerPresentable
 protocol ImagePickerPresentable {
-    func presentImagePickerController(delegate: ImagePickerControllerDelegate?, presentationStyle: UIModalPresentationStyle)
+    func presentImagePickerController(configuration: ImagePickerConfiguration,
+                                      delegate: ImagePickerControllerDelegate?,
+                                      presentationStyle: UIModalPresentationStyle)
 }
 
 extension ImagePickerPresentable where Self: UIViewController {
-    func presentImagePickerController(delegate: ImagePickerControllerDelegate?, presentationStyle: UIModalPresentationStyle = .fullScreen) {
-        let viewController = ImagePickerController()
-        viewController.imagePickerDelegate = delegate
-        viewController.modalPresentationStyle = presentationStyle
-        present(viewController, animated: true, completion: nil)
+    func presentImagePickerController(configuration: ImagePickerConfiguration = .default,
+                                      delegate: ImagePickerControllerDelegate? = nil,
+                                      presentationStyle: UIModalPresentationStyle = .fullScreen) {
+        let pickerController = ImagePickerController(configuration: configuration)
+        pickerController.imagePickerDelegate = delegate
+        pickerController.modalPresentationStyle = presentationStyle
+        present(pickerController, animated: true, completion: nil)
     }
 }

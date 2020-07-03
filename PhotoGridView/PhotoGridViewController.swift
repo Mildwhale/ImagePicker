@@ -9,21 +9,21 @@ protocol PhotoGridViewControllerDelegate: class {
 }
 
 final class PhotoGridViewController: UICollectionViewController {
-    private let fetchResult: PHFetchResult<PHAsset>
+    public weak var delegate: PhotoGridViewControllerDelegate?
     
     private let collectionViewFlowLayout = UICollectionViewFlowLayout()
     private let imageManager = PHCachingImageManager()
     
-    private var availableWidth: CGFloat // TODO: Configuration
+    private var availableWidth = CGFloat(0)
     private var thumbnailSize = CGSize.zero
     private var previousPreheatRect = CGRect.zero
     
-    weak var delegate: PhotoGridViewControllerDelegate?
+    private let fetchResult: PHFetchResult<PHAsset>
+    private let configuration: ImagePickerConfiguration
     
-    init(fetchResult: PHFetchResult<PHAsset>, availableWidth: CGFloat = .zero) {
+    init(fetchResult: PHFetchResult<PHAsset>, configuration: ImagePickerConfiguration) {
         self.fetchResult = fetchResult
-        self.availableWidth = availableWidth
-        
+        self.configuration = configuration
         super.init(collectionViewLayout: self.collectionViewFlowLayout)
     }
     
@@ -35,28 +35,17 @@ final class PhotoGridViewController: UICollectionViewController {
         super.viewDidLoad()
         
         resetCachedAssets()
-        
         setup()
     }
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        
-        let width = view.bounds.inset(by: view.safeAreaInsets).width
-        
-        // Adjust the item size if the available width has changed.
-        if availableWidth != width {
-            availableWidth = width
-            let columnCount = (availableWidth / 80).rounded(.towardZero)
-            let itemLength = (availableWidth - columnCount - 1) / columnCount
-            collectionViewFlowLayout.itemSize = CGSize(width: itemLength, height: itemLength)
-        }
+        updateFlowLayoutIfNeeded()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        // Determine the size of the thumbnails to request from the PHCachingImageManager.
         let scale = UIScreen.main.scale
         let cellSize = collectionViewFlowLayout.itemSize
         thumbnailSize = CGSize(width: cellSize.width * scale, height: cellSize.height * scale)
@@ -70,6 +59,30 @@ final class PhotoGridViewController: UICollectionViewController {
     private func setup() {
         collectionView.allowsMultipleSelection = true
         collectionView.register(PhotoGridCell.self, forCellWithReuseIdentifier: PhotoGridCell.reuseIdentifier)
+        
+        // Theme
+        collectionView.backgroundColor = configuration.theme.grid.backgroundColor
+        
+        // Grid
+        collectionViewFlowLayout.minimumInteritemSpacing = configuration.grid.minimumItemSpacing
+        collectionViewFlowLayout.minimumLineSpacing = configuration.grid.minimumLineSpacing
+    }
+    
+    private func updateFlowLayoutIfNeeded() {
+        let width = view.bounds.inset(by: view.safeAreaInsets).width
+        
+        if availableWidth != width {
+            availableWidth = width
+            
+            let numberOfItemsPerLine = CGFloat(configuration.grid.numberOfItemsPerLine)
+            let itemsWidth = availableWidth - (configuration.grid.minimumItemSpacing * (numberOfItemsPerLine - 1))
+            let itemWidth = (itemsWidth / numberOfItemsPerLine).rounded(.towardZero)
+            collectionViewFlowLayout.itemSize = CGSize(width: itemWidth, height: itemWidth)
+
+            let actualItemSpacing = (availableWidth - (itemWidth * numberOfItemsPerLine)) / (numberOfItemsPerLine - 1)
+            collectionViewFlowLayout.minimumInteritemSpacing = actualItemSpacing
+            collectionViewFlowLayout.minimumLineSpacing = actualItemSpacing
+        }
     }
 }
 
@@ -80,21 +93,23 @@ extension PhotoGridViewController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let asset = fetchResult.object(at: indexPath.item)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoGridCell.reuseIdentifier, for: indexPath)
         
-        // Dequeue a PhotoAlbumCell.
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoGridCell.reuseIdentifier, for: indexPath) as? PhotoGridCell
-            else { fatalError("Unexpected cell in collection view") }
+        if let gridCell = cell as? PhotoGridCell {
+            let asset = fetchResult.object(at: indexPath.item)
+            gridCell.representedAssetIdentifier = asset.localIdentifier
+            
+            imageManager.requestImage(for: asset,
+                                      targetSize: thumbnailSize,
+                                      contentMode: .aspectFill,
+                                      options: PHImageRequestOptions.thumbnail,
+                                      resultHandler: { image, _ in
+                                        if gridCell.representedAssetIdentifier == asset.localIdentifier {
+                                            gridCell.thumbnailImage = image
+                                        }
+            })
+        }
         
-        // Request an image for the asset from the PHCachingImageManager.
-        cell.representedAssetIdentifier = asset.localIdentifier
-        imageManager.requestImage(for: asset, targetSize: thumbnailSize, contentMode: .aspectFill, options: nil, resultHandler: { image, _ in
-            // UIKit may have recycled this cell by the handler's activation time.
-            // Set the cell's thumbnail image only if it's still showing the same asset.
-            if cell.representedAssetIdentifier == asset.localIdentifier {
-                cell.thumbnailImage = image
-            }
-        })
         return cell
     }
 }
@@ -102,11 +117,8 @@ extension PhotoGridViewController {
 // MARK: - UICollectionViewDelegate
 extension PhotoGridViewController {
     override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        guard let selectedIndices = collectionView.indexPathsForSelectedItems else {
-            return true
-        }
-        // TODO: 셀렉트 제한 처리
-        return selectedIndices.count < 5
+        guard let selectedItems = collectionView.indexPathsForSelectedItems else { return true }
+        return selectedItems.count < configuration.selection.max
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -193,5 +205,13 @@ private extension UICollectionView {
     func indexPathsForElements(in rect: CGRect) -> [IndexPath] {
         let allLayoutAttributes = collectionViewLayout.layoutAttributesForElements(in: rect)!
         return allLayoutAttributes.map { $0.indexPath }
+    }
+}
+
+private extension PHImageRequestOptions {
+    static var thumbnail: PHImageRequestOptions {
+        let options = PHImageRequestOptions()
+        options.isNetworkAccessAllowed = true
+        return options
     }
 }

@@ -18,13 +18,20 @@ class ViewController: UIViewController {
     }
     
     @IBAction func presentImagePicker(_ sender: UIButton) {
+        let navigationBarTheme = ImagePickerConfiguration.Theme.NavigationBar(translucent: false,
+                                                                                         backgroundColor: .systemPink,
+                                                                                         itemsTintColor: .white)
+        let theme = ImagePickerConfiguration.Theme(navigationBar: navigationBarTheme)
+        let selection = ImagePickerConfiguration.Selection(min: 1, max: 5)
+        let configuraion = ImagePickerConfiguration(theme: theme, selection: selection)
+        
         guard PHPhotoLibrary.authorizationStatus() == .authorized else {
             if PHPhotoLibrary.authorizationStatus() == .notDetermined {
                 PHPhotoLibrary.requestAuthorization({ status in
                     if status == .authorized {
                         DispatchQueue.main.async { [weak self] in
                             guard let self = self else { return }
-                            self.presentImagePickerController(delegate: self)
+                            self.presentImagePickerController(configuration: configuraion, delegate: self)
                         }
                     }
                 })
@@ -33,7 +40,7 @@ class ViewController: UIViewController {
             }
             return
         }
-        presentImagePickerController(delegate: self)
+        presentImagePickerController(configuration: configuraion, delegate: self)
     }
 }
 
