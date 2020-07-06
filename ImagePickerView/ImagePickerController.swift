@@ -28,7 +28,21 @@ final class ImagePickerController: UINavigationController {
         didSet { updateUI() }
     }
     
-    private var albums: [PHAssetCollection] = []
+    private lazy var albums: [PHAssetCollection] = {
+        var albums: [PHAssetCollection] = []
+        configuration.albums.forEach {
+            $0.collections.enumerateObjects { [weak self] (collection, _, _) in
+                guard let self = self else { return }
+                let fetchOptions = PHFetchOptions()
+                fetchOptions.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.image.rawValue)
+                fetchOptions.fetchLimit = 1
+                
+                guard PHAsset.fetchAssets(in: collection, options: fetchOptions).count > 0 else { return }
+                albums.append(collection)
+            }
+        }
+        return albums
+    }()
     private let configuration: ImagePickerConfiguration
     
     // Init
@@ -57,9 +71,6 @@ final class ImagePickerController: UINavigationController {
         
         // Album Button
         albumButton.addTarget(self, action: #selector(presentAlbumSelectionSheet(_:)), for: .touchUpInside)
-        
-        // Filter Albums
-        filterEmptyAlbum()
         
         // Setup CollectionViewController
         let fetchResult = fetchAssets(from: albums.first)
@@ -123,20 +134,6 @@ extension ImagePickerController {
             return PHAsset.fetchAssets(in: collection, options: fetchOptions)
         } else {
             return PHAsset.fetchAssets(with: fetchOptions)
-        }
-    }
-    
-    private func filterEmptyAlbum() {
-        configuration.albums.forEach {
-            $0.collections.enumerateObjects { [weak self] (collection, _, _) in
-                guard let self = self else { return }
-                let fetchOptions = PHFetchOptions()
-                fetchOptions.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.image.rawValue)
-                fetchOptions.fetchLimit = 1
-                
-                guard PHAsset.fetchAssets(in: collection, options: fetchOptions).count > 0 else { return }
-                self.albums.append(collection)
-            }
         }
     }
 }
