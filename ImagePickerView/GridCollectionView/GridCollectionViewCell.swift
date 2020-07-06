@@ -2,12 +2,13 @@ import UIKit
 
 final class GridCollectionViewCell: UICollectionViewCell {
     private let imageView = UIImageView()
+    private let checkBoxImageView = UIImageView(image: UIImage(imageLiteralResourceName: "generalCheckbox24N"))
     
     var assetIdentifier: String = ""
     
     override var isSelected: Bool {
         didSet {
-            alpha = isSelected ? 0.5 : 1.0
+            checkBoxImageView.image = isSelected ? UIImage(imageLiteralResourceName: "generalCheckboxPk24P") : UIImage(imageLiteralResourceName: "generalCheckbox24N")
         }
     }
     
@@ -33,6 +34,7 @@ final class GridCollectionViewCell: UICollectionViewCell {
     private func setup() {
         addSubview(imageView)
         
+        // Content image view
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         
@@ -41,6 +43,13 @@ final class GridCollectionViewCell: UICollectionViewCell {
         imageView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         imageView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         imageView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        
+        // CheckBox image view
+        addSubview(checkBoxImageView)
+        
+        checkBoxImageView.translatesAutoresizingMaskIntoConstraints = false
+        checkBoxImageView.topAnchor.constraint(equalTo: topAnchor, constant: 8.0).isActive = true
+        checkBoxImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8.0).isActive = true
     }
 }
 

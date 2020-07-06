@@ -31,6 +31,7 @@ final class GridCollectionViewController: UICollectionViewController {
         }
     }
     private var _fetchResult: PHFetchResult<PHAsset>
+    private var assetsForSelectionSync: Set<PHAsset> = []
     
     // Configuration
     private let configuration: ImagePickerConfiguration
@@ -135,11 +136,15 @@ extension GridCollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.collectionView(self, didSelect: fetchResult.object(at: indexPath.item))
+        let asset = fetchResult.object(at: indexPath.item)
+        assetsForSelectionSync.insert(asset)
+        delegate?.collectionView(self, didSelect: asset)
     }
     
     override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        delegate?.collectionView(self, didDeselect: fetchResult.object(at: indexPath.item))
+        let asset = fetchResult.object(at: indexPath.item)
+        assetsForSelectionSync.remove(asset)
+        delegate?.collectionView(self, didDeselect: asset)
     }
 }
 
@@ -227,6 +232,7 @@ extension GridCollectionViewController: PHPhotoLibraryChangeObserver {
                 
                 collectionView.performBatchUpdates({
                     if let removed = changes.removedIndexes, !removed.isEmpty {
+                        deselectRemovedItem(removed, changes: changes)
                         collectionView.deleteItems(at: removed.map({ IndexPath(item: $0, section: 0) }))
                     }
                     if let inserted = changes.insertedIndexes, !inserted.isEmpty {
@@ -245,6 +251,34 @@ extension GridCollectionViewController: PHPhotoLibraryChangeObserver {
                 collectionView.reloadData()
             }
             resetCachedAssets()
+            selectionSynchronization()
+        }
+    }
+    
+    private func deselectRemovedItem(_ removedIndexSet: IndexSet, changes: PHFetchResultChangeDetails<PHAsset>) {
+        guard let selectedIndexPaths = collectionView.indexPathsForSelectedItems,
+            selectedIndexPaths.isEmpty == false else { return }
+        let removedIndexPaths = removedIndexSet.map { IndexPath(item: $0, section: 0) }
+        let removedSelection = selectedIndexPaths.filter { removedIndexPaths.contains($0) }
+        
+        removedSelection.forEach {
+            let removedAsset = changes.fetchResultBeforeChanges.object(at: $0.row)
+            delegate?.collectionView(self, didDeselect: removedAsset)
+        }
+    }
+    
+    private func selectionSynchronization() {
+        if let selectedItems = collectionView.indexPathsForSelectedItems {
+            selectedItems.forEach {
+                collectionView.deselectItem(at: $0, animated: false)
+            }
+        }
+
+        assetsForSelectionSync.forEach {
+            let index = fetchResult.index(of: $0)
+            guard index != NSNotFound else { return }
+            let indexPath = IndexPath(item: index, section: 0)
+            collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
         }
     }
 }
